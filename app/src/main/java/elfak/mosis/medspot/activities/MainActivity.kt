@@ -1,4 +1,4 @@
-package elfak.mosis.medspot
+package elfak.mosis.medspot.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
