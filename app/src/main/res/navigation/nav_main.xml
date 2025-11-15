@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/HomeFragment">
+
+    <fragment
+        android:id="@+id/HomeFragment"
+        android:name="elfak.mosis.medspot.screens.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_HomeFragment_to_MapFragment"
+            app:destination="@+id/MapFragment">
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/MapFragment"
+        android:name="elfak.mosis.medspot.screens.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_MapFragment_to_FiltersFragment"
+            app:destination="@+id/FiltersFragment">
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/AddFragment"
+        android:name="elfak.mosis.medspot.screens.AddFragment"
+        android:label="fragment_add"
+        tools:layout="@layout/fragment_add">
+        <action
+            android:id="@+id/action_AddFragment_to_MapFragment"
+            app:destination="@+id/MapFragment"
+            app:popUpTo="@id/MapFragment"
+            app:popUpToInclusive="true">
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/FiltersFragment"
+        android:name="elfak.mosis.medspot.screens.FiltersFragment"
+        android:label="fragment_filters"
+        tools:layout="@layout/fragment_filters">
+        <action
+            android:id="@+id/action_FiltersFragment_to_MapFragment"
+            app:destination="@+id/MapFragment"
+            app:popUpTo="@id/MapFragment"
+            app:popUpToInclusive="true">
+        </action>
+    </fragment>
+
+</navigation>
