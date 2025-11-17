@@ -53,4 +53,11 @@
         </action>
     </fragment>
 
+    <fragment
+        android:id="@+id/HistoryFragment"
+        android:name="elfak.mosis.medspot.screens.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history">
+    </fragment>
+
 </navigation>

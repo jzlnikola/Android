@@ -65,6 +65,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navController.popBackStack()
                 navController.navigate(R.id.MapFragment)
             }
+            R.id.nav_history -> {
+                navController.popBackStack()
+                navController.navigate(R.id.HistoryFragment)
+            }
             R.id.nav_logout -> {
                 auth.signOut()
                 val i: Intent = Intent(this, LoginAndSignUpActivity::class.java)

@@ -64,7 +64,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:autofillHints="@string/input_first_name"
-            android:afterTextChanged="@{userViewModel.onFirstNameTextChanged}"/>
+            android:afterTextChanged="@{userViewModel.onFirstNameTextChanged}"
+            android:textColor="#000000"/>
 
         <EditText
             android:id="@+id/input_lastname"
@@ -85,7 +86,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_firstname"
             android:autofillHints="@string/input_last_name"
-            android:afterTextChanged="@{userViewModel.onLastNameTextChanged}"/>
+            android:afterTextChanged="@{userViewModel.onLastNameTextChanged}"
+            android:textColor="#000000"/>
 
         <EditText
             android:id="@+id/input_phone"
@@ -106,7 +108,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_lastname"
             android:autofillHints="@string/input_phone_number"
-            android:afterTextChanged="@{userViewModel.onPhoneTextChanged}"/>
+            android:afterTextChanged="@{userViewModel.onPhoneTextChanged}"
+            android:textColor="#000000"/>
 
         <EditText
             android:id="@+id/input_username"
@@ -127,7 +130,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline"
             android:autofillHints="@string/input_username"
-            android:afterTextChanged="@{userViewModel.onUsernameTextChanged}"/>
+            android:afterTextChanged="@{userViewModel.onUsernameTextChanged}"
+            android:textColor="#000000"/>
 
         <EditText
             android:id="@+id/input_password"
@@ -148,7 +152,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/input_username"
             android:autofillHints="@string/input_password"
-            android:afterTextChanged="@{userViewModel.onPasswordTextChanged}"/>
+            android:afterTextChanged="@{userViewModel.onPasswordTextChanged}"
+            android:textColor="#000000"/>
 
         <Button
             android:id="@+id/button_signup"

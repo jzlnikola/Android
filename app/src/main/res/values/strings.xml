@@ -19,4 +19,17 @@
     <string name="welcome">Welcome</string>
     <string name="open_nav">Open Navigation Drawer</string>
     <string name="close_nav">Close Navigation Drawer</string>
+    <string name="button_collect">Rate</string>
+    <string name="button_post">Post</string>
+    <string name="hint_add">Choose Medical Item</string>
+    <string name="hint_select">Choose Medical Item</string>
+    <string name="radius_search">Radius(meters)</string>
+    <string name="button_from_date">From</string>
+    <string name="button_to_date">To</string>
+    <string name="date">date</string>
+    <string name="button_filter">Filter</string>
+    <string name="rating_caption">Rate Device</string>
+    <string name="submit_rating">Rate</string>
+    <string name="input_description">Write Description(optional)</string>
+    <string name="history">Usage History</string>
 </resources>

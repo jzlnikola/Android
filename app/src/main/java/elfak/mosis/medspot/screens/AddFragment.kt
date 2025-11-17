@@ -1,33 +1,49 @@
 package elfak.mosis.medspot.screens
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
+import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import elfak.mosis.medspot.R
+import elfak.mosis.medspot.models.LocationViewModel
+import elfak.mosis.medspot.models.data.Item
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class AddFragment : DialogFragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AddFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AddFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var auth: FirebaseAuth = Firebase.auth
+    private var db = Firebase.firestore
+    private var itemName: String = ""
+    private val locationViewModel: LocationViewModel by activityViewModels()
+    private lateinit var postBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -38,23 +54,107 @@ class AddFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getReceivedItems()
+
+        postBtn = requireView().findViewById(R.id.button_post)
+        postBtn.setOnClickListener{postItem()}
+        postBtn.isEnabled = false
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            dialog?.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        }
+        else{
+            dialog?.window?.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        }
+    }
+
+    private fun getReceivedItems() {
+        val userID: String = auth.currentUser?.uid ?: ""
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            val names = listOf(
+                "Prva pomoć",
+                "Defibrilator",
+                "Zavoji",
+                "EKG uređaj",
+                "EpiPen",
+                "Aparat za merenje šećera",
+                "Aparat za pritisak",
+                "Pulsni oksimetar",
+                "Inhalator",
+                "Toplomer",
+            )
+
+            val spinner: AutoCompleteTextView = requireView().findViewById(R.id.spinner)
+            spinner.isEnabled = false
+            val adapter = ArrayAdapter(requireView().context, android.R.layout.simple_spinner_dropdown_item, names as List<Any?>)
+            spinner.setAdapter(adapter)
+            spinner.setOnItemClickListener { adapterview, view, i, l ->
+                val txtInputLayoutSpinner: TextInputLayout = requireView().findViewById(R.id.textInputLayoutSpinner)
+                itemName = adapterview.getItemAtPosition(i).toString()
             }
+            spinner.addTextChangedListener(object: TextWatcher {
+                override fun beforeTextChanged(text: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(text: Editable?) {
+                    postBtn.isEnabled = text.toString() != ""
+                }
+            })
+        }
+    }
+
+    private fun postItem(){
+        val prioriyPoints = when(itemName) {
+            "Defibrilator" -> 30
+            "EpiPen" -> 30
+            "EKG uređaj" -> 20
+            "Pulsni oksimetar" -> 20
+            "Inhalator" -> 20
+            "Aparat za pritisak" -> 15
+            "Aparat za merenje šećera" -> 15
+            "Prva pomoć" -> 5
+            "Zavoji" -> 5
+            "Toplomer" -> 3
+
+            else -> 0
+        }
+
+        val hash = GeoFireUtils.getGeoHashForLocation(
+            GeoLocation(locationViewModel.latitude.value!!.toDouble(), locationViewModel.longitude.value!!.toDouble())
+        )
+
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val today = sdf.format(Date())
+
+        val itemData = hashMapOf(
+            "name" to itemName,
+            "points" to prioriyPoints,
+            "rating" to 0.0,
+            "ratingCount" to 0,
+            "latitude" to locationViewModel.latitude.value,
+            "longitude" to locationViewModel.longitude.value,
+            "user" to auth.currentUser?.uid,
+            "dateCreated" to today,
+            "hash" to hash
+        )
+
+        Toast.makeText(requireContext(), "Posting...", Toast.LENGTH_SHORT).show()
+        db.collection("markers")
+            .add(itemData)
+            .addOnSuccessListener {
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Greška pri dodavanju!", Toast.LENGTH_SHORT).show()
+            }
+
+        prioriyPoints?.let { locationViewModel.setPoints(it) }
+        itemName?.let { locationViewModel.setItemName(it) }
+        Toast.makeText(requireContext(), "Aparat uspešno dodat!", Toast.LENGTH_SHORT).show()
+        dismiss()
     }
 }

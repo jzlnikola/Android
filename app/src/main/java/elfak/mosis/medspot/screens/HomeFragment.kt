@@ -48,10 +48,35 @@ class HomeFragment : Fragment() {
 
         auth = Firebase.auth
         val welcomeText: TextView = requireView().findViewById(R.id.welcome_textView)
-        welcomeText.text =" Welcome \n" +  auth.currentUser?.email?.substringBefore("@")
+        val priorityText: TextView = requireView().findViewById(R.id.points_textView)
+
+
+        if(auth.currentUser?.email?.isNullOrBlank() == false) {
+            welcomeText.text = " Welcome \n" + auth.currentUser?.email?.substringBefore("@")
+        }
+        else
+        {
+            welcomeText.text = "Welcome"
+        }
 
         val database = Firebase.database("https://nijo-medspot-id-default-rtdb.europe-west1.firebasedatabase.app/")
             .reference.child("users").child(auth.currentUser?.uid.toString())
+
+        val userListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val user = dataSnapshot.getValue<User>()
+                if(user != null) {
+                    val pTxt = "Priority: " + user?.points.toString()
+                    priorityText.text = pTxt
+                }
+                else
+                {
+                    priorityText.text = ""
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        database.addValueEventListener(userListener)
 
         val mapButton = view.findViewById<Button>(R.id.button)
         mapButton.setOnClickListener {

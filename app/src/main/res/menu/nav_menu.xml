@@ -16,6 +16,11 @@
             android:icon="@drawable/baseline_map_24"
             android:title="@string/nav_map"/>
 
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/baseline_medical_services_24"
+            android:title="History"/>
+
     </group>
 
     <item
