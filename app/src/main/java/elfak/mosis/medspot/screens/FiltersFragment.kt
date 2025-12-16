@@ -222,7 +222,6 @@ class FiltersFragment : Fragment() {
                     val matchingDocs: MutableList<DocumentSnapshot> = ArrayList()
                     for (task in tasks) {
                         val snap = task.result
-                        Toast.makeText(requireContext(), "Kockica vratila: ${snap!!.size()} dokumenata", Toast.LENGTH_LONG).show()
                         for (doc in snap!!.documents) {
                             val lat = doc.get("latitude").toString().toDouble()
                             val lng = doc.get("longitude").toString().toDouble()

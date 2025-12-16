@@ -9,6 +9,7 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     android:background="#ffffff"
+    android:screenOrientation="portrait"
     tools:context=".activities.MainActivity">
 
     <include layout="@layout/content_main" />

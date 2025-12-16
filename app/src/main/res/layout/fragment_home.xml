@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/med_spot_background"
     tools:context=".screens.HomeFragment">
 
     <ImageView
@@ -29,7 +30,7 @@
         android:gravity="center"
         android:text="@string/welcome"
         android:textAlignment="center"
-        android:textColor="#97ded4"
+        android:textColor="#1d689b"
         android:textSize="60sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
